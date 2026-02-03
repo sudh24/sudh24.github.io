@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine?</title>
+
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    /* Pre-Yes background */
+    background-image: url('https://i.postimg.cc/VLc01bYW/IMG-8777.jpg'); /* Replace with your Imgur pre-Yes image */
+    background-size: cover;
+    background-position: center;
+    transition: background 1s ease;
+  }
+
+  h1 {
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 1.8rem;
+    z-index: 2;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .buttons {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    max-width: 400px;
+    z-index: 2;
+  }
+
+  button {
+    font-size: 22px;
+    padding: 16px 28px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    touch-action: manipulation;
+    z-index: 2;
+    position: absolute;
+  }
+
+  #yesBtn {
+    background-color: #ff4d6d;
+    color: white;
+    left: 20px;
+    bottom: 20px;
+  }
+
+  #noBtn {
+    background-color: #adb5bd;
+    color: white;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 24px;
+    animation: floatUp 4s linear forwards;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  @keyframes floatUp {
+    to { transform: translateY(-110vh); opacity: 0; }
+  }
+
+  .confetti {
+    position: fixed;
+    width: 8px;
+    height: 14px;
+    animation: fall 3s linear forwards;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<h1 id="question">Will you be my Valentine? 💖</h1>
+
+<div class="buttons">
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const question = document.getElementById("question");
+
+const guiltTexts = [
+  "Are you sure?", "Think about the pizza incident 🍕",
+  "Wow. After EVERYTHING?", "You promised 😤",
+  "Remember our 3am talks??", "That’s cold.",
+  "This hurts 😭", "Last chance 😩"
+];
+
+let yesSize = 22;
+
+// Vibrate mobile if available
+function vibratePhone() {
+  if ("vibrate" in navigator) navigator.vibrate([50,30,50]);
+}
+
+// Move No button randomly
+function moveNoButton() {
+  vibratePhone();
+
+  // Random guilt message
+  noBtn.textContent = guiltTexts[Math.floor(Math.random() * guiltTexts.length)];
+
+  // Grow Yes button
+  yesSize += 10;
+  yesBtn.style.fontSize = yesSize + "px";
+
+  // Random position for No button within screen
+  const padding = 20;
+  const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+  const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+
+// No button triggers
+noBtn.addEventListener("mouseenter", moveNoButton); // desktop hover
+noBtn.addEventListener("touchstart", moveNoButton); // mobile touch
+noBtn.addEventListener("click", moveNoButton);       // fallback click
+
+// Yes button clicked
+yesBtn.addEventListener("click", () => {
+  // Post-Yes background
+  document.body.style.backgroundImage = "url('https://i.postimg.cc/VLc01bYW/IMG-8777.jpg')"; // Replace with your Imgur post-Yes image
+
+  question.textContent = "YAY!!! 💕🥰 You’re my Valentine!";
+  yesBtn.remove();
+  noBtn.remove();
+
+  // Hearts + confetti
+  setInterval(createHeart, 250);
+  for (let i = 0; i < 140; i++) setTimeout(createConfetti, i * 12);
+});
+
+// Create hearts
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = "💖";
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.fontSize = (20 + Math.random() * 20) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 4000);
+}
+
+// Create confetti
+function createConfetti() {
+  const confetti = document.createElement("div");
+  confetti.className = "confetti";
+  confetti.style.left = Math.random() * window.innerWidth + "px";
+  confetti.style.backgroundColor =
+    ["#ff4d6d","#ffd166","#06d6a0","#4d96ff"][Math.floor(Math.random()*4)];
+  document.body.appendChild(confetti);
+  setTimeout(() => confetti.remove(), 3000);
+}
+</script>
+
+</body>
+</html>
